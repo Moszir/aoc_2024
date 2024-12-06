@@ -30,30 +30,24 @@ while True:
 
 print(len(seen))
 
-
+# Takes around 7s on my PC
 loops = 0
-print(rows * cols)
-i = 0
-for rb in range(rows):
-    for cb in range(cols):
-        i += 1
-        if (i % 100 == 0):
-            print(f'{i=}')
-        seen = set()
-        r, c = orig
-        d = 0
-        while True:
-            if (r, c, d) in seen:
-                loops += 1
-                break
-            seen.add((r, c, d))
-            r2, c2 = r + dirs[d][0], c + dirs[d][1]
-            if not 0 <= r2 < rows or not 0 <= c2 < cols:
-                break
-            if grid[r2][c2] == '#' or (r2 == rb and c2 == cb):
-                d = (d+1) % 4
-                # let it stay in one place, might need more than one turn
-            else:
-                r, c = r2, c2
+for rb, rc in seen:
+    seen2 = set()
+    r, c = orig
+    d = 0
+    while True:
+        if (r, c, d) in seen2:
+            loops += 1
+            break
+        seen2.add((r, c, d))
+        r2, c2 = r + dirs[d][0], c + dirs[d][1]
+        if not 0 <= r2 < rows or not 0 <= c2 < cols:
+            break
+        if grid[r2][c2] == '#' or (r2 == rb and c2 == rc):
+            d = (d+1) % 4
+            # let it stay in one place, might need more than one turn
+        else:
+            r, c = r2, c2
 
 print(loops)
