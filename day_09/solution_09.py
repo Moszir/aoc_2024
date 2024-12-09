@@ -1,9 +1,9 @@
 disk_map = open('input.txt').read().strip()
 disk_size = sum(int(c) for c in disk_map)
-print(disk_size)
 
 disk = [None] * disk_size
 position = 0
+spaces = [[] for i in range(10)]
 for i, c in enumerate(disk_map):
     size = int(c)
     if i % 2 == 0:
@@ -14,9 +14,13 @@ for i, c in enumerate(disk_map):
             position += 1
     else:
         # space
+        spaces[size].append(position)
         position += size
 
-part2_disk = disk.copy()
+for i, s in enumerate(spaces):
+    s.sort(reverse=True)
+
+disk2 = disk.copy()
 
 space_index = next(i for i, value in enumerate(disk) if value is None)
 index = disk_size - 1
@@ -31,31 +35,43 @@ while index > space_index:
         while disk[space_index] is not None:
             space_index += 1
 
-print(sum(i * value for i, value in enumerate(disk) if value is not None))
+def checksum(d):
+    return sum(i * value for i, value in enumerate(d) if value is not None)
 
-print(part2_disk[:25])
+print(checksum(disk))
+
 index = disk_size - 1
 last_file_index = disk_size
 while index > 0:
     # find the next file
-    while index > 0 and (part2_disk[index] is None or part2_disk[index] >= last_file_index):
+    while index > 0 and (disk2[index] is None or disk2[index] >= last_file_index):
         index -= 1
-    print(index)
-    file_id = part2_disk[index]
+    file_id = disk2[index]
     last_file_index = file_id
     file_last = index
-    while part2_disk[index] == file_id:
+    while disk2[index] == file_id:
         index -= 1
     file_first = index + 1
     file_size = file_last - file_first + 1
 
     # find the first space that can fit the file
-    space_index = next((i for i in range(disk_size) if all((part2_disk[i + j] is None for j in range(file_size)))), None)
-    if space_index is not None and space_index < file_first:
+    space_size = None
+    space_index = disk_size
+    for s in range(file_size, 10):
+        if spaces[s] and spaces[s][-1] < space_index:
+            space_size = s
+            space_index = spaces[s][-1]
+
+    if space_index < file_first:
         # move the file to the space
         for i in range(file_size):
-            part2_disk[space_index + i] = file_id
-            part2_disk[file_first + i] = None
+            disk2[space_index + i] = file_id
+            disk2[file_first + i] = None
+        spaces[space_size].pop()
 
-print(part2_disk[:25])
-print(sum(i * value for i, value in enumerate(part2_disk) if value is not None))
+        remaining_space_size = space_size - file_size
+        if remaining_space_size > 0:
+            spaces[remaining_space_size].append(space_index + file_size)
+            spaces[remaining_space_size].sort(reverse=True)
+
+print(checksum(disk2))
