@@ -15,9 +15,10 @@ class Place:
     peaks: typing.Set[Position]
 
     @property
-    def neighbors(self):
-        r, c = self.place
-        return ((r + dr, c + dc) for dr, dc in [(-1, 0), (0, 1), (1, 0), (0, -1)])
+    def neighbors(self) -> typing.Iterable[Position]:
+        return (
+            (self.place[0] + dr, self.place[1] + dc)
+            for dr, dc in [(-1, 0), (0, 1), (1, 0), (0, -1)])
 
 
 places = { height: [] for height in range(10) }
@@ -26,7 +27,7 @@ for r, row in enumerate(lines):
         places[int(height)].append(Place((r, c), 0, set()))
 
 for place in places[9]:
-    place.peaks = (place.place,)
+    place.peaks = set(place.place,)
     place.score = 1
 
 for height in range(8, -1, -1):
@@ -37,5 +38,5 @@ for height in range(8, -1, -1):
                 place.peaks.update(neighbor.peaks)
                 place.score += neighbor.score
 
-print(sum(len(place.peaks) for place in places[0]))
-print(sum(place.score for place in places[0]))
+print(sum(len(place.peaks) for place in places[0]))  # 1021
+print(sum(place.score for place in places[0]))  # 1302

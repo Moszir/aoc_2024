@@ -16,3 +16,6 @@ def count(stone, steps):
 
 for step in (25, 75):
     print(sum(count(stone, step) for stone in numbers))
+
+# 235850
+# 279903140844645
