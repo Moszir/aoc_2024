@@ -43,29 +43,23 @@ for r in range(rows):
 
         sides = 0
         for (dr, dc), points in perimeters.items():
-            prd = [False] * len(points)
+            seen = set()
             for i, (r1, c1) in enumerate(points):
-                if not prd[i]:
-                    prd[i] = True
+                if (r1, c1) not in seen:
+                    seen.add((r1, c1))
                     sides += 1
+
                     dir1 = (-dc, dr)
-                    r2, c2 = r1, c1
-                    while True:
-                        r2 += dir1[0]
-                        c2 += dir1[1]
-                        if (r2, c2) in points:
-                            prd[points.index((r2, c2))] = True
-                        else:
-                            break
-                    r2, c2 = r1, c1
+                    step = 1
+                    while (p := (r1 + step * dir1[0], c1 + step * dir1[1])) in points:
+                        seen.add(p)
+                        step += 1
+
                     dir2 = (dc, -dr)
-                    while True:
-                        r2 += dir2[0]
-                        c2 += dir2[1]
-                        if (r2, c2) in points:
-                            prd[points.index((r2, c2))] = True
-                        else:
-                            break
+                    step = 1
+                    while (p := (r1 + step * dir2[0], c1 + step * dir2[1])) in points:
+                        seen.add(p)
+                        step += 1
 
         cost1 += area * perimeter
         cost2 += area * sides
