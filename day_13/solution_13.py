@@ -9,14 +9,13 @@
 # a.y * prize.x - a.y * b.x * v + b.y * v * a.x == prize.y * a.x
 # (a.x * b.y - a.y * b.x) * v == prize.y * a.x - a.y * prize.x
 def solve(a, b, prize):
+    assert a[0] != 0
     c = a[0] * b[1] - a[1] * b[0]
-    d = prize[1] * a[0] - a[1] * prize[0]
-    if c != 0 and d % c == 0:
-        v = d // c
-        e = prize[0] - b[0] * v
-        if e % a[0] == 0:
-            u = e // a[0]
-            return u, v
+    if c != 0:
+        v = (prize[1] * a[0] - a[1] * prize[0]) / c
+        u = (prize[0] - b[0] * v) / a[0]
+        if u.is_integer() and v.is_integer():
+            return int(u), int(v)
     return None
 
 
@@ -31,7 +30,6 @@ for d in open('input.txt').read().strip().split('\n\n'):
     b = (int(b[0].split('+')[1]), int(b[1].split('+')[1]))
     prize = (int(prize[0].split('=')[1]), int(prize[1].split('=')[1]))
 
-    assert a[0] != 0
     x = solve(a, b, prize)
     if x is not None:
         part1 += 3 * x[0] + x[1]
