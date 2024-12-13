@@ -1,29 +1,43 @@
-from scipy import optimize
+# Solve the following system of equations:
+# a.x * u + b.x * v == prize.x
+# a.y * u + b.y * v == prize.y
+#
+# We can rewrite this as:
+# u = (prize.x - b.x * v) / a.x
+# a.y * ((prize.x - b.x * v) / a.x) + b.y * v == prize.y
+# a.y * (prize.x - b.x * v) + b.y * v * a.x == prize.y * a.x
+# a.y * prize.x - a.y * b.x * v + b.y * v * a.x == prize.y * a.x
+# (a.x * b.y - a.y * b.x) * v == prize.y * a.x - a.y * prize.x
+def solve(a, b, prize):
+    c = a[0] * b[1] - a[1] * b[0]
+    d = prize[1] * a[0] - a[1] * prize[0]
+    if c != 0 and d % c == 0:
+        v = d // c
+        e = prize[0] - b[0] * v
+        if e % a[0] == 0:
+            u = e // a[0]
+            return u, v
+    return None
 
 
-results = []
+part1 = 0
+part2 = 0
 for d in open('input.txt').read().strip().split('\n\n'):
     lines = d.split('\n')
-    a_x = int(lines[0].split(',')[0].split('+')[1])
-    a_y = int(lines[0].split(',')[1].split('+')[1])
-    b_x = int(lines[1].split(',')[0].split('+')[1])
-    b_y = int(lines[1].split(',')[1].split('+')[1])
-    prize_x = int(lines[2].split(',')[0].split('=')[1]) + 10000000000000
-    prize_y = int(lines[2].split(',')[1].split('=')[1]) + 10000000000000
-    result = optimize.milp(
-        c=[3, 1],
-        constraints=[
-            optimize.LinearConstraint(
-                A=[a_x, b_x],
-                lb=prize_x,
-                ub=prize_x),
-            optimize.LinearConstraint(
-                A=[a_y, b_y],
-                lb=prize_y,
-                ub=prize_y)],
-        bounds=optimize.Bounds(lb=0),
-        integrality=True)
-    if result.success:
-        results.append(result)
+    assert len(lines) == 3
 
-print(sum([result.fun for result in results]))
+    a, b, prize = ((line.split(',') for line in lines))
+    a = (int(a[0].split('+')[1]), int(a[1].split('+')[1]))
+    b = (int(b[0].split('+')[1]), int(b[1].split('+')[1]))
+    prize = (int(prize[0].split('=')[1]), int(prize[1].split('=')[1]))
+
+    assert a[0] != 0
+    x = solve(a, b, prize)
+    if x is not None:
+        part1 += 3 * x[0] + x[1]
+    x = solve(a, b, (prize[0] + 10_000_000_000_000, prize[1] + 10_000_000_000_000))
+    if x is not None:
+        part2 += 3 * x[0] + x[1]
+
+print(part1)
+print(part2)
