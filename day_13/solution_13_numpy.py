@@ -20,11 +20,11 @@ def solve(a, b, prize):
     if all((x.is_integer() for x in result)):
         integer_solutions += 1
         both = 0
-        if any((result[i].is_integer() != result2[i].is_integer() for i in (0, 1))):
+        if any((not result2[i].is_integer() for i in (0, 1))):
             print(f'numpy inaccurate: {result[0]:10}, {result[1]:10} != {result2[0]:10}, {result2[1]:10}')
             numpy_inaccurate += 1
             both += 1
-        if any((result[i].is_integer() != result3[i].is_integer() for i in (0, 1))):
+        if any((not result3[i].is_integer() for i in (0, 1))):
             print(f'scipy inaccurate: {result[0]:10}, {result[1]:10} != {result3[0]:10}, {result3[1]:10}')
             scipy_inaccurate += 1
             both += 1
