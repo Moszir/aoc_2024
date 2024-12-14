@@ -202,16 +202,16 @@ def find_best(foo, minimize=False):
             best_maps = []
 
         if record_keeper.record == value:
-            best_maps.append(guard_map)
+            best_maps.append((move_counter, guard_map))
 
         for guard in guards:
             guard.move()
 
     if len(best_maps) > 1:
         print('There were other maps with the same best value:')
-        for i in range(1, len(best_maps)):
+        for i, best_map in range(1, len(best_maps)):
             print(f'Map {i}:')
-            best_maps[i].print()
+            best_map.print()
 
 
 # find_best(GuardMap.number_of_components, minimize=True)
