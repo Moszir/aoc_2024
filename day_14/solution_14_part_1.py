@@ -5,7 +5,6 @@ https://adventofcode.com/2024/day/14
 import dataclasses
 import re
 
-
 x_max = 101
 x_half = 50
 y_max = 103
