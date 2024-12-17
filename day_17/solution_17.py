@@ -17,12 +17,14 @@ class Device:
         self.b = 0
         self.c = 0
 
-    def solve(self, a, b, c):
+    def solve(self, a: int):
+        """ Simulate the device with the given program and initial value of register A. """
         self.a = a
-        self.b = b
-        self.c = c
+        self.b = 0
+        self.c = 0
         ip = 0
         output = []
+        global program
 
         while ip < len(program):
             command = program[ip]
@@ -52,7 +54,7 @@ class Device:
 
 
 device = Device()
-print(','.join([str(x) for x in device.solve(A, B, C)]))
+print(','.join([str(x) for x in device.solve(A)]))
 
 
 def recursive_run(n, a):
@@ -60,7 +62,7 @@ def recursive_run(n, a):
         return a
     a <<= 3
     for x in range(8):
-        if device.solve(a + x, 0, 0) == program[n:]:
+        if device.solve(a + x) == program[n:]:
             s = recursive_run(n - 1, a + x)
             if s != -1:
                 return s
