@@ -31,30 +31,23 @@ class Device:
 
             if command == 0:  # adv, division
                 self.a = self.a // 2 ** combo
-                ip += 2
             elif command == 1:  # bxl, xor
                 self.b ^= op
-                ip += 2
             elif command == 2:  # bst, combo mod 8
                 self.b = combo % 8
-                ip += 2
             elif command == 3:  # jnz, jump if a != 0
                 if self.a != 0:
                     ip = op
-                else:
-                    ip += 2
+                    continue
             elif command == 4:  # bxc, b = b ^ c
                 self.b ^= self.c
-                ip += 2
             elif command == 5:  # out, output combo mod 8
                 output.append(int(combo % 8))
-                ip += 2
             elif command == 6:  # bdv, adv just stored in b
                 self.b = self.a // 2 ** combo
-                ip += 2
             elif command == 7:  # cdv, adv just stored in c
                 self.c = self.a // 2 ** combo
-                ip += 2
+            ip += 2
         return output
 
 
