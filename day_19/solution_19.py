@@ -1,7 +1,6 @@
 """ Advent of Code 2024 Day 19 """
 from functools import cache
 
-
 patterns, designs = open("input.txt").read().strip().split('\n\n')
 patterns = patterns.split(', ')
 designs = designs.split('\n')
@@ -11,21 +10,8 @@ designs = designs.split('\n')
 def ways(design):
     if not design:  # Empty string can be formed in one way
         return 1
-    global patterns
-    result = 0
-    for pattern in patterns:
-        if design.startswith(pattern):
-            result += ways(design[len(pattern):])
-    return result
+    return sum(ways(design[len(pattern):]) for pattern in patterns if design.startswith(pattern))
 
 
-part1 = 0
-part2 = 0
-for design in designs:
-    target_ways = ways(design)
-    if target_ways > 0:
-        part1 += 1
-    part2 += target_ways
-
-print(part1)  # 280
-print(part2)  # 606411968721181
+print(sum(1 for design in designs if ways(design) > 0))  # 280
+print(sum(ways(design) for design in designs))  # 606411968721181
